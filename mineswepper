@@ -105,7 +105,7 @@ class ap():
                 dis.fill(0)
                 pygame.draw.rect(self.dis, (200, 0, 0),pygame.Rect(0,0, 500, 500) , 0)
                 font = pygame.font.SysFont('couriernew', 80)
-                text = font.render(('Проиграл'), True, (0,0,0))
+                text = font.render(('Lose'), True, (0,0,0))
                 self.dis.blit(text,(100, 200))
                 self.endgame=1
             else:
@@ -113,7 +113,7 @@ class ap():
                     dis.fill(0)
                     pygame.draw.rect(self.dis, (0, 200, 0),pygame.Rect(0,0, 500, 500) , 0)
                     font = pygame.font.SysFont('couriernew', 80)
-                    text = font.render(('Победа'), True, (0,0,0))
+                    text = font.render(('Win'), True, (0,0,0))
                     self.dis.blit(text,(100, 200))
                     self.endgame=1
                 else:
