@@ -1,0 +1,201 @@
+#Minesweeper
+import pygame
+import random
+map=[]
+bombs=[]
+amount_bombs=[]
+map_open=[]
+mark=[]
+pygame.init()
+clock=[]
+cor=0
+def display (size1,size2):
+    return pygame.display.set_mode((size1,size2))
+
+def set_clock(fps):
+    clock.append(pygame.time.Clock())
+    clock.append(fps)
+
+def update():
+    clock[0].tick(clock[1])
+    pygame.display.update()
+class ap():
+    def __init__(self, map, dis,bombs,amount_bombs,map_open,mark):
+        self.map=map
+        self.dis=dis
+        self.bombs=bombs
+        self.amount_bombs=amount_bombs
+        self.map_open=map_open
+        self.mark=mark
+        self.endgame=0
+        self.amountfree=0
+    def fill_map(self):
+        for i in range(12):
+            self.map.append([])
+            for j in range(12):
+                self.map[i].append(pygame.Rect(50*(j-1),50*(i-1), 40, 40))
+    def draw(self):
+        if self.endgame==0:
+            for i in range(10):
+                for j in range(10):
+                    if self.map_open[i+1][j+1]==1:
+
+                        if self.bombs[i+1][j+1]==1:
+                            pygame.draw.rect(self.dis, (0, 0, 255), self.map[i+1][j+1], 0)
+                        else:
+                            pygame.draw.rect(self.dis, (255, 255, 255), self.map[i+1][j+1], 0)
+                            font = pygame.font.SysFont('couriernew', 40)
+                            text = font.render(str(amount_bombs[i+1][j+1]), True, (0,0,0))
+                            self.dis.blit(text,(map[i+1][j+1].x,map[i+1][j+1].y))
+                    elif self.mark[i+1][j+1]==1:
+                        pygame.draw.rect(self.dis, (255, 0, 0), self.map[i+1][j+1], 0)
+                    else:
+                        pygame.draw.rect(self.dis, (50, 50, 50), self.map[i+1][j+1], 0)
+    def fill_bombs(self):
+        for i in range(12):
+            self.bombs.append([])
+            for j in range(12):
+                self.bombs[i].append([])
+                self.bombs[i][j]=0
+    def set_mine(self):
+            for i in range (15):
+                x=random.randint(0,9)
+                y=random.randint(0,9)
+                while self.bombs[x+1][y+1]==1:
+                    x=random.randint(0,9)
+                    y=random.randint(0,9)
+                self.bombs[x+1][y+1]=1
+    def fill_amount_bombs(self):
+        for i in range(12):
+            self.amount_bombs.append([])
+            for j in range(12):
+                self.amount_bombs[i].append([])
+                self.amount_bombs[i][j]=0
+    def check_amount_bombs(self):
+        for i in range (10):
+            x=i+1
+            for j in range(10):
+                y=j+1
+                if self.bombs[x-1][y-1]==1:
+                    self.amount_bombs[x][y]+=1
+                if self.bombs[x-1][y]==1:
+                    self.amount_bombs[x][y]+=1
+                if self.bombs[x-1][y+1]==1:
+                    self.amount_bombs[x][y]+=1
+                if self.bombs[x][y-1]==1:
+                    self.amount_bombs[x][y]+=1
+                if self.bombs[x][y+1]==1:
+                    self.amount_bombs[x][y]+=1
+                if self.bombs[x+1][y-1]==1:
+                    self.amount_bombs[x][y]+=1
+                if self.bombs[x+1][y]==1:
+                    self.amount_bombs[x][y]+=1
+                if self.bombs[x+1][y+1]==1:
+                    self.amount_bombs[x][y]+=1
+    def fill_map_open(self):
+        for i in range(12):
+            self.map_open.append([])
+            for j in range(12):
+                self.map_open[i].append([])
+                self.map_open[i][j]=0
+    def open_map(self,cor):
+        if self.mark[cor[1]//50+1][cor[0]//50+1]==0 and self.map_open[cor[1]//50+1][cor[0]//50+1]==0:
+            self.map_open[cor[1]//50+1][cor[0]//50+1]=1
+            if self.bombs[cor[1]//50+1][cor[0]//50+1]==1:
+                dis.fill(0)
+                pygame.draw.rect(self.dis, (200, 0, 0),pygame.Rect(0,0, 500, 500) , 0)
+                font = pygame.font.SysFont('couriernew', 80)
+                text = font.render(('Проиграл'), True, (0,0,0))
+                self.dis.blit(text,(100, 200))
+                self.endgame=1
+            else:
+                if self.amountfree==84:     
+                    dis.fill(0)
+                    pygame.draw.rect(self.dis, (0, 200, 0),pygame.Rect(0,0, 500, 500) , 0)
+                    font = pygame.font.SysFont('couriernew', 80)
+                    text = font.render(('Победа'), True, (0,0,0))
+                    self.dis.blit(text,(100, 200))
+                    self.endgame=1
+                else:
+                    self.amountfree+=1
+    def fill_mark(self):
+        for i in range(12):
+            self.mark.append([])
+            for j in range(12):
+                self.mark[i].append([])
+                self.mark[i][j]=0
+    def set_mark(self,cor):
+        if self.mark[cor[1]//50+1][cor[0]//50+1]==1:
+            self.mark[cor[1]//50+1][cor[0]//50+1]=0
+        else:
+            self.mark[cor[1]//50+1][cor[0]//50+1]=1
+    def refill_bombs(self):
+        for i in range(12):
+            for j in range(12):
+                self.bombs[i][j]=0
+    def refill_amount_bombs(self):
+        for i in range(12):
+            for j in range(12):
+                self.amount_bombs[i][j]=0
+    def refill_map_open(self):
+        for i in range(12):
+            for j in range(12):
+                self.map_open[i][j]=0
+    def refill_mark(self):
+        for i in range(12):
+            for j in range(12):
+                self.mark[i][j]=0
+    def replay(self):
+        self.refill_bombs()
+        self.refill_amount_bombs()
+        self.refill_map_open()
+        self.refill_mark()
+        self.set_mine()
+        self.check_amount_bombs()
+        self.endgame=0
+        self.amountfree=0
+        dis.fill(0)
+        self.draw()
+        update()
+    def run(self):
+        self.fill_map()
+        self.fill_bombs()
+        self.set_mine()
+        self.fill_amount_bombs()
+        self.check_amount_bombs()
+        self.fill_map_open()
+        self.fill_mark()
+        self.draw()
+        update()
+        
+dis=display(500,500)
+set_clock(40)
+app=ap(map,dis,bombs,amount_bombs,map_open,mark)
+dis.fill(0)
+app.run()
+fullgameend=0
+while 1:
+    if fullgameend==1:
+        break
+    if app.endgame==0:
+        for i in pygame.event.get():
+            if i.type == pygame.KEYDOWN:
+                if i.key==pygame.K_q:
+                    fullgameend=1
+            if i.type == pygame.MOUSEBUTTONDOWN:
+                if i.button == 1:
+                    app.open_map(pygame.mouse.get_pos())
+                elif i.button == 3:
+                    app.set_mark(pygame.mouse.get_pos())
+                app.draw()
+        update()
+    else:
+        for i in pygame.event.get():
+            if i.type == pygame.MOUSEBUTTONDOWN:
+                app.replay()          
+            if i.type == pygame.KEYDOWN:
+                if i.key==pygame.K_q:
+                    fullgameend=1
+                    break
+pygame.quit()
+            
